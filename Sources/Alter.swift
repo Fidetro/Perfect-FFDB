@@ -15,7 +15,7 @@ struct Alter {
         tableClass = table
         
     }
-    func execute() -> Bool {
+    func execute(shouldClose:Bool = false) -> Bool {
         guard let connect = FFDB.connect else {
             assertionFailure("must be instance FFDB.setup(_ type:FFDBConnectType)")
             return false
@@ -32,7 +32,7 @@ struct Alter {
         for newColumn in newColumns {
             var sql =  "alter table `\(table.tableName())` add "
             sql.append(alterColumnsInTableSQL(newColumn))
-            let alterResult = connect.executeDBUpdateAfterClose(sql: sql)
+            let alterResult = connect.executeDBUpdate(sql: sql, shouldClose: shouldClose)
             if alterResult == false {
                 result = false
             }

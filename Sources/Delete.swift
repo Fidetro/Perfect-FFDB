@@ -30,7 +30,7 @@ struct Delete {
         return delete
     }
     
-    func execute() -> Bool {
+    func execute(shouldClose:Bool = false) -> Bool {
         guard let connect = FFDB.connect else {
             assertionFailure("must be instance FFDB.setup(_ type:FFDBConnectType)")
             return false
@@ -39,7 +39,7 @@ struct Delete {
             assertionFailure("sql can't nil")
             return false
         }
-        return connect.executeDBUpdateAfterClose(sql: sql)
+        return connect.executeDBUpdate(sql: sql, shouldClose: shouldClose)
     }
 }
 

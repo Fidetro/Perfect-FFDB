@@ -37,7 +37,7 @@ struct Select {
         select.returnType = type
         return select
     }
-    public  func execute<T:Decodable>(_ type:T.Type) -> Array<Decodable>? {
+    public  func execute<T:Decodable>(_ type:T.Type,shouldClose:Bool = false) -> Array<Decodable>? {
         guard let connect = FFDB.connect else {
             assertionFailure("must be instance FFDB.setup(_ type:FFDBConnectType)")
             return nil
@@ -46,7 +46,7 @@ struct Select {
             assertionFailure("sql can't nil")
             return nil
         }
-        return connect.executeDBQuery(return: type.self, sql: sql)
+        return connect.executeDBQuery(return: type.self, sql: sql, shouldClose: shouldClose)
         
     }
 }

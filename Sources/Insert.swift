@@ -61,7 +61,7 @@ public struct Insert {
         return insert
     }
     
-  public  func execute() -> Bool {
+  public  func execute(shouldClose:Bool = false) -> Bool {
         guard let connect = FFDB.connect else {
             assertionFailure("must be instance FFDB.setup(_ type:FFDBConnectType)")
             return false
@@ -70,7 +70,7 @@ public struct Insert {
             assertionFailure("sql can't nil")
             return false
         }
-        return connect.executeDBUpdateAfterClose(sql: sql)
+    return connect.executeDBUpdate(sql: sql, shouldClose:shouldClose)
     }
 }
 

@@ -11,6 +11,10 @@
     import PerfectMySQL
     import Foundation
     public struct PerfectMySQLConnect :FFDBConnect {
+  
+        
+        
+        
         
         public  let host : String
         public  let user : String
@@ -65,33 +69,23 @@
         }
         
         
-        
-        public static func executeDBUpdate(sql: String) -> Bool {
-            
+        public static func executeDBUpdate(sql: String, shouldClose: Bool = false) -> Bool {
             let querySuccess = PerfectMySQLConnect.mysql.query(statement: sql)
             guard querySuccess else {
                 printDebugLog(sql + PerfectMySQLConnect.mysql.errorMessage())
                 return false
             }
             
-            
-            return true
-        }
-        
-        
-        
-        public static func executeDBUpdateAfterClose(sql: String) -> Bool {
-            
-            let querySuccess = PerfectMySQLConnect.mysql.query(statement: sql)
-            guard querySuccess else {
-                printDebugLog(sql + PerfectMySQLConnect.mysql.errorMessage())
-                return false
+            if shouldClose == true {
+                PerfectMySQLConnect.mysql.close()
             }
             
             return true
         }
         
-        public static func executeDBQuery<T>(return type: T.Type, sql: String) -> Array<Decodable>? where T : Decodable {
+        
+        
+        public static func executeDBQuery<T>(return type: T.Type, sql: String,shouldClose:Bool) -> Array<Decodable>? where T : Decodable {
             let stmt = MySQLStmt(mysql)
             let prepareSuccess = stmt.prepare(statement: sql)
             guard prepareSuccess else {
@@ -126,14 +120,23 @@
                         let model = try decoder.decode(type, from: jsonData)
                         modelArray.append(model)
                     }catch{
+                        if shouldClose == true {
+                            mysql.close()
+                        }
                         printDebugLog(error.localizedDescription)
                         assertionFailure("check you func columntype,func customColumnsType,property type")
                     }
                 }
-                stmt.close()
+                if shouldClose == true {
+                    mysql.close()
+                }
+                
+                
                 return modelArray
             } catch  {
-                stmt.close()
+                if shouldClose == true {
+                    mysql.close()
+                }
                 printDebugLog(error.localizedDescription)
                 
             }
