@@ -29,7 +29,7 @@ public protocol FIDRuntime {
     /// 获取对象类型
     var subType : Any.Type {get}
     
-    /// 相当于Objective-C中的valueForKey: 
+    /// 相当于Objective-C中的valueForKey:
     ///
     /// - Parameter key: key
     /// - Returns: value
@@ -38,11 +38,11 @@ public protocol FIDRuntime {
 
 public protocol FFObject:FIDRuntime,Decodable {
     var primaryID : Int64? {get}
-
+    
     static func registerTable()
     static func select(where condition:String?) -> Array<FFObject>?
-    func insert() -> Bool
-    func update() -> Bool
+    func insert(complete:FFDBUpdateComplete)
+    func update(complete:FFDBUpdateComplete)
     func delete(complete:FFDBUpdateComplete)
     static func columnsType() -> [String:String]
     
