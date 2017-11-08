@@ -15,30 +15,26 @@ struct Alter {
         tableClass = table
         
     }
-    func execute(shouldClose:Bool = false) -> Bool {
+    func execute(shouldClose:Bool = false,complete:FFDBUpdateComplete = nil) {
         guard let connect = FFDB.connect else {
             assertionFailure("must be instance FFDB.setup(_ type:FFDBConnectType)")
-            return false
+            return
         }
         guard let table = tableClass else {
             assertionFailure("tableClass can't nil,use init(_ table:FFObject.Type)")
-            return false
+            return
         }
         guard let newColumns = findNewColumns(table) else {
-            return true
+            return
         }
 
-        var result = true
         for newColumn in newColumns {
             var sql =  "alter table `\(table.tableName())` add "
             sql.append(alterColumnsInTableSQL(newColumn))
-            let alterResult = connect.executeDBUpdate(sql: sql, shouldClose: shouldClose)
-            if alterResult == false {
-                result = false
-            }
+            connect.executeDBUpdate(sql: sql, shouldClose: shouldClose, complete: complete)
+          
         }
         
-        return result
     }
     func alterColumnsInTableSQL(_ newColumn:String) -> String {
         var sql = String()

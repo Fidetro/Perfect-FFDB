@@ -29,31 +29,35 @@ extension FFObject {
     public  static func select(where condition:String?) -> Array<FFObject>? {
         return (FFDBManager.select(self, nil, where: condition) as! Array<FFObject>?)
     }
-    public func insert() -> Bool {
-        return FFDBManager.insert(self)
+    public func insert(complete:FFDBUpdateComplete = nil) {
+        FFDBManager.insert(self,complete:complete)
     }
-    public  func update() -> Bool {
-        return FFDBManager.update(self, set: nil)
+    public  func update(complete:FFDBUpdateComplete = nil) {
+        FFDBManager.update(self, set: nil,complete:complete)
     }
-    public  func update(set condition:String) -> Bool {
-        if let primaryID = self.primaryID  {
-            return FFDBManager.update(self.subType, set: condition, where: "primaryID = '\(primaryID)'")
-        }else{
+    public  func update(set condition:String,complete:FFDBUpdateComplete = nil) {
+        guard let primaryID = self.primaryID else {
             assertionFailure("primaryID is nil")
-            return false
+            return
         }
-        
+            FFDBManager.update(self.subType, set: condition, where: "primaryID = '\(primaryID)'",complete:complete)
     }
-    public  func delete() -> Bool {
-        return FFDBManager.delete(self)
+    
+    public  func delete(complete:FFDBUpdateComplete = nil) {        
+        FFDBManager.delete(self,complete:complete)
     }
     public   static func registerTable() {
-        let createResult = FFDBManager.create(self)
-        let alterResult = FFDBManager.alter(self)
-        if createResult == true && alterResult == true {
-        }else{
-            assertionFailure("register fail")
-        }
+        FFDBManager.create(self,complete:{ (_,result) in
+            if result == false {
+                assertionFailure("register fail")
+            }
+        })
+        FFDBManager.alter(self,complete:{ (_,result) in
+            if result == false {
+                assertionFailure("register fail")
+            }
+        })
+        
     }
 }
 
@@ -208,7 +212,7 @@ extension FFObject {
 
 extension FIDRuntime {
     
-   
+    
     
     public  var subType: Any.Type {
         let mirror  = Mirror(reflecting: self)

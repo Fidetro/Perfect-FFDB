@@ -6,8 +6,12 @@
 //  Copyright © 2017年 Fidetro. All rights reserved.
 //
 
+
+import PerfectMySQL
+public typealias FFDBUpdateComplete = ((_ mysql:MySQL,_ result:Bool)->())?
 public protocol FFDBConnect {
-    static func executeDBUpdate(sql:String,shouldClose:Bool) -> Bool
+    
+    static func executeDBUpdate(sql:String,shouldClose:Bool,complete:FFDBUpdateComplete)
 
     static func executeDBQuery<T:Decodable>(return type:T.Type, sql:String,shouldClose:Bool) -> Array<Decodable>?
     

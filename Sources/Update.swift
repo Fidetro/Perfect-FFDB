@@ -71,16 +71,16 @@ struct Update {
         return update
     }
     
-    func execute(shouldClose:Bool = false) -> Bool {
+    func execute(shouldClose:Bool = false,complete:FFDBUpdateComplete = nil){
         guard let connect = FFDB.connect else {
             assertionFailure("must be instance FFDB.setup(_ type:FFDBConnectType)")
-            return false
+            return
         }
         guard let sql = sqlStatement else {
             assertionFailure("sql can't nil")
-            return false
+            return
         }
-        return connect.executeDBUpdate(sql: sql, shouldClose: shouldClose)
+         connect.executeDBUpdate(sql: sql, shouldClose: shouldClose, complete: complete)
     }
     
     private func columnsToSetSQLFormat(_ object:FFObject ,_ columns:[String]?) -> String {

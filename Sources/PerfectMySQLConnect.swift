@@ -11,6 +11,12 @@
     import PerfectMySQL
     import Foundation
     public struct PerfectMySQLConnect :FFDBConnect {
+ 
+        
+ 
+        
+        
+        
   
         
         
@@ -68,7 +74,23 @@
             return fieldNames.values.contains(columnName)
         }
         
-        
+        public static func executeDBUpdate(sql: String, shouldClose: Bool, complete:FFDBUpdateComplete) {
+            let querySuccess = PerfectMySQLConnect.mysql.query(statement: sql)
+            if shouldClose == true {
+                PerfectMySQLConnect.mysql.close()
+            }
+            guard querySuccess else {
+                printDebugLog(sql + PerfectMySQLConnect.mysql.errorMessage())
+                if let block = complete {
+                    block(PerfectMySQLConnect.mysql,false)
+                }
+                return
+            }
+            
+            if let block = complete {
+                block(PerfectMySQLConnect.mysql,true)
+            }
+        }
         public static func executeDBUpdate(sql: String, shouldClose: Bool = false) -> Bool {
             let querySuccess = PerfectMySQLConnect.mysql.query(statement: sql)
             guard querySuccess else {

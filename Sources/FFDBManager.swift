@@ -13,24 +13,24 @@ public struct FFDBManager {
 
 // MARK: - Insert
 extension FFDBManager {
-    public static func insert(_ object:FFObject, _ columns:[String]?) -> Bool {
+    public static func insert(_ object:FFObject, _ columns:[String]?,complete:FFDBUpdateComplete = nil)  {
         if let columnsArray = columns {
             var values = Array<Any>()
             for key in columnsArray {
                 values.append(object.valueNotNullFrom(key))
             }
-            return Insert().into(object.subType).columns(columnsArray).values(values).execute()
+            Insert().into(object.subType).columns(columnsArray).values(values).execute(complete: complete)
             
             
         }else{
-            return Insert().into(object.subType).columns(object.subType).values(object).execute()
+            Insert().into(object.subType).columns(object.subType).values(object).execute(complete: complete)
         }
     }
-    public  static func insert(_ object:FFObject) -> Bool {
-        return insert(object, nil)
+    public  static func insert(_ object:FFObject,complete:FFDBUpdateComplete = nil)  {
+        insert(object, nil,complete:complete)
     }
-    public  static func insert(_ table:FFObject.Type,_ columns:[String],values:[Any]) -> Bool{
-        return Insert().into(table).columns(columns).values(values).execute()
+    public  static func insert(_ table:FFObject.Type,_ columns:[String],values:[Any],complete:FFDBUpdateComplete = nil) {
+        Insert().into(table).columns(columns).values(values).execute(complete: complete)
     }
 }
 
@@ -62,23 +62,22 @@ extension FFDBManager {
 
 // MARK: - Update
 extension FFDBManager {
-    public static func update(_ object:FFObject,set columns:[String]?) -> Bool {
+    public static func update(_ object:FFObject,set columns:[String]?,complete:FFDBUpdateComplete = nil) {
         if let primaryID = object.primaryID  {
             if let col = columns {
-                return Update(object).set(col).whereFormat("primaryID = '\(primaryID)'").execute()
+                 Update(object).set(col).whereFormat("primaryID = '\(primaryID)'").execute(complete: complete)
             }else{
-                return Update(object).set().whereFormat("primaryID = '\(primaryID)'").execute()
+                 Update(object).set().whereFormat("primaryID = '\(primaryID)'").execute(complete: complete)
             }
         }else{
             assertionFailure("primaryID can't be nil")
-            return false
         }
     }
-    public  static func update(_ table:FFObject.Type,set setFormat:String,where whereFormat:String?) -> Bool {
+    public  static func update(_ table:FFObject.Type,set setFormat:String,where whereFormat:String?,complete:FFDBUpdateComplete = nil) {
         if let format = whereFormat  {
-            return Update(table).set(setFormat).whereFormat(format).execute()
+             Update(table).set(setFormat).whereFormat(format).execute(complete: complete)
         }else{
-            return Update(table).set(setFormat).execute()
+             Update(table).set(setFormat).execute(complete: complete)
         }
     }
 }
@@ -86,34 +85,34 @@ extension FFDBManager {
 
 // MARK: - Delete
 extension FFDBManager {
-    public  static func delete(_ table:FFObject.Type,where condition:String?) -> Bool{
+    public  static func delete(_ table:FFObject.Type,where condition:String?,complete:FFDBUpdateComplete = nil){
         if let format = condition {
-            return Delete().from(table).whereFormat(format).execute()
+            Delete().from(table).whereFormat(format).execute(complete: complete)
         }else{
-            return Delete().from(table).execute()
+            Delete().from(table).execute(complete: complete)
         }
     }
-    public   static func delete(_ object:FFObject) -> Bool{
-        if let primaryID = object.primaryID {
-            return Delete().from(object.subType).whereFormat("primaryID = '\(primaryID)'").execute()
-        }else{
+    public static func delete(_ object:FFObject,complete:FFDBUpdateComplete = nil) {
+        guard let primaryID = object.primaryID else {
             assertionFailure("primaryID can't be nil")
-            return false
+            return
         }
+        Delete().from(object.subType).whereFormat("primaryID = '\(primaryID)'").execute(complete: complete)
+        
     }
 }
 
 // MARK: - Create
 extension FFDBManager {
-    static func create(_ table:FFObject.Type) -> Bool {
-        return Create(table).execute()
+    static func create(_ table:FFObject.Type,complete:FFDBUpdateComplete = nil) {
+        Create(table).execute(complete: complete)
     }
 }
 
 // MARK: - Create
 extension FFDBManager {
-    static func alter(_ table:FFObject.Type) -> Bool {
-        return Alter(table).execute()
+    static func alter(_ table:FFObject.Type,complete:FFDBUpdateComplete = nil) {
+        Alter(table).execute(complete: complete)
     }
 }
 

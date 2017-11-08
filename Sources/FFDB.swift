@@ -43,7 +43,7 @@ public protocol FFObject:FIDRuntime,Decodable {
     static func select(where condition:String?) -> Array<FFObject>?
     func insert() -> Bool
     func update() -> Bool
-    func delete() -> Bool
+    func delete(complete:FFDBUpdateComplete)
     static func columnsType() -> [String:String]
     
     /// 相当于Objective-C中的valueForKey: 但返回的值永远不会为空
