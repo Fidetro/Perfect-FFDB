@@ -8,19 +8,11 @@
 
 #if os(iOS)
 #else
+    public typealias FFDBUpdateComplete = ((_ mysql:MySQL,_ result:Bool)->())?
     import PerfectMySQL
     import Foundation
-    public struct PerfectMySQLConnect :FFDBConnect {
+    public struct PerfectMySQLConnect  {
  
-        
- 
-        
-        
-        
-  
-        
-        
-        
         
         public  let host : String
         public  let user : String

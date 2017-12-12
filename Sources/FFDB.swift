@@ -15,10 +15,7 @@ func printDebugLog<T>(_ message: T,
     #endif
 }
 public struct FFDB {
-    static var connect : FFDBConnect.Type?
-    public  static func setup(_ type:FFDBConnectType){
-        connect = type.connect()
-    }
+    static var connect = PerfectMySQLConnect.self
 }
 
 

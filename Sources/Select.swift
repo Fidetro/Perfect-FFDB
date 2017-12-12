@@ -38,15 +38,11 @@ struct Select {
         return select
     }
     public  func execute<T:Decodable>(_ type:T.Type,shouldClose:Bool = false) -> Array<Decodable>? {
-        guard let connect = FFDB.connect else {
-            assertionFailure("must be instance FFDB.setup(_ type:FFDBConnectType)")
-            return nil
-        }
         guard let sql = sqlStatement else {
             assertionFailure("sql can't nil")
             return nil
         }
-        return connect.executeDBQuery(return: type.self, sql: sql, shouldClose: shouldClose)
+        return FFDB.connect.executeDBQuery(return: type.self, sql: sql, shouldClose: shouldClose)
         
     }
 }
