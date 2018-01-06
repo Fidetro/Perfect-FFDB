@@ -98,7 +98,12 @@ extension FFObject {
             case is Optional<String>.Type:
                 columnsType[label] = "text"
                 break
-                
+            case is Double.Type:
+                columnsType[label] = "double"
+                break
+            case is Optional<Double>.Type:
+                columnsType[label] = "double"
+                break
             case is Float.Type:
                 columnsType[label] = "float"
                 break
@@ -126,12 +131,7 @@ extension FFObject {
                 //                columnsType[label] = "float"
                 //                break
                 
-            case is Double.Type:
-                columnsType[label] = "double"
-                break
-            case is Optional<Double>.Type:
-                columnsType[label] = "double"
-                break
+
             case is Int.Type:
                 columnsType[label] = "integer"
                 break
