@@ -1,6 +1,8 @@
 
 # SwiftFFDB
 
+⚠️deprecated⚠️please use [Perfect-CRUD](https://github.com/PerfectlySoft/Perfect-CRUD)
+
 SwiftFFDB is a Object/Relational Mapping (ORM) support to iOS and Perfect-Server library.Since SwiftFFDB is build on top of FFDB.  
 if you use Objective-C,you can use [FFDB](https://github.com/fidetro/ffdb)  
 
